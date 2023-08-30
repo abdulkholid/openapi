@@ -1,0 +1,463 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "EMS RESTful API",
+        "description": "RESTful API for Employee Management System of Semesta Network Integrator.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://dev.javas.web.id/api/v1",
+            "description": "development server"
+        },
+        {
+            "url": "https://staging.javas.web.id/api/v1",
+            "description": "staging server"
+        },
+        {
+            "url": "https://prod.javas.web.id/api/v1",
+            "description": "production server"
+        }
+    ],
+    "paths": {
+        "/todolist": {
+            "get": {
+                "security": [
+                    {
+                        "TodolistAuth": []
+                    }
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Get Todolist",
+                "description": "Get all active Todolist",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "required": false,
+                        "in": "query",
+                        "description": "filter Todolist by name",
+                        "schema": {
+                            "type": "string",
+                            "nullable": true,
+                            "default": false,
+                            "minLength": 1,
+                            "maxLength": 150
+                        },
+                        "examples": {
+                            "coding": {
+                                "value": "coding"
+                            }
+                        }
+                    },
+                    {
+                        "name": "all",
+                        "required": false,
+                        "in": "query",
+                        "description": "include Done Todolist",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all Todolist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "priority": {
+                                                "type": "integer",
+                                                "format": "int32"
+                                            },
+                                            "tags": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Success get all Todolist",
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "name": "coding",
+                                                "tags": [
+                                                    "tech",
+                                                    "work"
+                                                ]
+                                            },
+                                            {
+                                                "id": 1,
+                                                "name": "swiming",
+                                                "tags": [
+                                                    "sport",
+                                                    "healing"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "TodolistAuth": []
+                    }
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Store Todolist",
+                "description": "Store new Todolist",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "minLength": 1
+                                    },
+                                    "priority": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "nullable": false,
+                                        "minItems": 1,
+                                        "items": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        }
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "swiming": {
+                                    "value": {
+                                        "name": "Swiming",
+                                        "priority": 4,
+                                        "tags": [
+                                            "Sport",
+                                            "Daily"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success create Todolist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "nullable": false
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true,
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "priority": {
+                                                    "type": "integer",
+                                                    "format": "int32"
+                                                },
+                                                "tags": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Success create New Todolist",
+                                        "value": {
+                                            "message": "Inserting new  data, success!",
+                                            "data": {
+                                                "id": 1,
+                                                "name": "coding",
+                                                "tags": [
+                                                    "tech",
+                                                    "work"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "failed": {
+                                        "description": "Failed create New Todolist",
+                                        "value": {
+                                            "message": "Inserting new  data, failed!",
+                                            "errors": [
+                                                "field name is required",
+                                                "field priority should be a number"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/todolist/{todolistId}": {
+            "put": {
+                "security": [
+                    {
+                        "TodolistAuth": []
+                    }
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Update Todolist",
+                "description": "Update specific Todolist",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TodolistId"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "nullable": false,
+                                        "minLength": 1
+                                    },
+                                    "priority": {
+                                        "type": "integer",
+                                        "nullable": false,
+                                        "minimum": 1
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "nullable": false,
+                                        "minItems": 1,
+                                        "items": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        }
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "swiming": {
+                                    "value": {
+                                        "name": "Swiming",
+                                        "priority": 4,
+                                        "tags": [
+                                            "Sport",
+                                            "Daily"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success update Todolist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "priority": {
+                                            "type": "integer",
+                                            "format": "int32"
+                                        },
+                                        "tags": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "coding": {
+                                        "description": "Success create Coding Todolist",
+                                        "value": {
+                                            "id": 1,
+                                            "name": "coding",
+                                            "tags": [
+                                                "tech",
+                                                "work"
+                                            ]
+                                        }
+                                    },
+                                    "swiming": {
+                                        "description": "Success create Swiming Todolist",
+                                        "value": {
+                                            "id": 1,
+                                            "name": "swiming",
+                                            "tags": [
+                                                "sport",
+                                                "healing"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "TodolistAuth": []
+                    }
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Delete Todolist",
+                "description": "Delete Specific Todolist",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/TodolistId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete Todolist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "Success delete Todolist",
+                                        "value": {
+                                            "success": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "TodolistId": {
+                "name": "todolistId",
+                "required": true,
+                "in": "path",
+                "description": "delete Todolist by todolist ID",
+                "schema": {
+                    "type": "integer",
+                    "nullable": false,
+                    "minimum": 1
+                }
+            }
+        },
+        "schemas": {
+            "Todolist": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "tags": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateOrUpdateTodolist": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "tags": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ArrayTodolist": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Todolist"
+                }
+            }
+        },
+        "securitySchemes": {
+            "TodolistAuth": {
+                "type": "apiKey",
+                "description": "Authentication for Todolist RESTful API",
+                "name": "X-API-KEY",
+                "in": "header"
+            }
+        }
+    }
+}
